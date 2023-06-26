@@ -1,9 +1,10 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 // 路由
-import router from './router/index'
+import router from './router/index.ts'
 // element-plus（element-ui）
 import ElementPlus from 'element-plus';
+import 'element-plus/dist/index.css'
 // 图标工具
 import * as echarts from 'echarts';
 // 请求工具类

@@ -1,6 +1,6 @@
 import {createRouter, createWebHashHistory} from 'vue-router';
-import workRouter from '@/router/modules/work'
-import billRouter from '@/router/modules/bill'
+import workRouter from '@/router/modules/work.ts'
+import billRouter from '@/router/modules/bill.ts'
 
 const routes = [
     {
