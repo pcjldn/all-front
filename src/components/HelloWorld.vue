@@ -1,30 +1,11 @@
 <template>
   <div class="hello">
-   111111111,br
+    {{ msg }}
   </div>
 </template>
 
-<script>
-import request from "@/utils/request";
-
-export default  {
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  },
-  mounted() {
-    request({
-      url:"http://101.132.187.55:8088/extra/goodsType/do",
-      method:"get"
-    })
-        .then(res=>{
-          console.log(res)
-        }).catch(err=>{
-          console.log(err)
-    });
-
-  },
-}
+<script setup>
+const msg= "您好，这里是系统导航";
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

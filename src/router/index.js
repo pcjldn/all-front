@@ -1,4 +1,6 @@
 import {createRouter, createWebHashHistory} from 'vue-router';
+import workRouter from '@/router/modules/work'
+import billRouter from '@/router/modules/bill'
 
 const routes = [
     {
@@ -9,12 +11,10 @@ const routes = [
             title: '主页'
         }
     },
-    {
-        path: '/about',
-        name: 'About',
-        component: () => import("@/components/HelloWorld.vue"),
-    }
+    ...workRouter,
+    ...billRouter
 ];
+
 
 const router = createRouter({
     history: createWebHashHistory(),
