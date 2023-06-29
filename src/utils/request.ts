@@ -1,4 +1,5 @@
 import axios from "axios";
+import {ElMessage} from "element-plus";
 
 const request = axios.create({
     // 设置默认的请求头
@@ -23,10 +24,11 @@ request.interceptors.request.use(
 // 响应拦截器
 request.interceptors.response.use(
     (response) => {
-        // 可在接收到响应数据之前进行处理
+        // ElMessage('this is a message.')        // 可在接收到响应数据之前进行处理
         return response.data;
     },
     (error) => {
+        ElMessage.error('接口错误')
         // 处理响应错误
         return Promise.reject(error);
     }

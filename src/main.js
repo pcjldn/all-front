@@ -8,7 +8,7 @@ import 'element-plus/dist/index.css'
 // 图标工具
 import * as echarts from 'echarts';
 // 请求工具类
-import request from "./utils/request";
+import request from "./utils/request.ts";
 // jquery
 import $ from 'jquery'
 //引入图标库
