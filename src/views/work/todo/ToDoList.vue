@@ -3,65 +3,9 @@
     <!--树区域-->
     <!--    <div class="tree-box"></div>-->
     <!--主区域-->
+
     <div class="main-box">
-      <!--搜索区-->
-      <div class="search-box">
-        <el-form
-            label-width="100px"
-            :model="searchData"
-            label-suffix=":"
-        >
-          <el-row gutter="40">
-            <el-col :span="5">
-              <el-form-item label="待办类型">
-                <el-select v-model="searchData.todoType" class="m-2" placeholder="请选择" style="width: 100%">
-                  <el-option
-                      v-for="item in todoTypeOptions"
-                      :key="item.id"
-                      :label="item.typeName"
-                      :value="item.id"
-                  />
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="5">
-              <el-form-item label="状态">
-                <el-select v-model="searchData.status" class="m-2" placeholder="请选择" style="width: 100%">
-                  <el-option
-                      v-for="item in statusOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                  />
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="5">
-              <el-form-item label="所属用户">
-                <el-select v-model="searchData.todoUserId" class="m-2" placeholder="请选择" style="width: 100%">
-                  <el-option
-                      v-for="item in userOptions"
-                      :key="item.id"
-                      :label="item.userName"
-                      :value="item.id"
-                  />
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="5">
-              <el-form-item label="待办内容">
-                <el-input type="text" v-model="searchData.todoContent"/>
-              </el-form-item>
-            </el-col>
-            <el-col :span="4">
-              <el-button type="primary" @click="getTodo">查询</el-button>
-              <el-button type="warning" @click="clearSearchAndQuery">重置</el-button>
-            </el-col>
-          </el-row>
-        </el-form>
-
-
-      </div>
+      <topSelect style="margin: 20px 0" :list="list" @submit="submit"/>
       <!--顶部按钮-->
       <div class="top-action-box">
         <el-button type="primary" @click="add">新增</el-button>
@@ -107,7 +51,7 @@
           :model="formData"
           label-suffix=":"
       >
-        <el-row gutter="40">
+        <el-row :gutter="40">
           <el-col :span="12">
             <el-form-item label="待办类型">
               <el-select v-model="formData.todoType" class="m-2" placeholder="请选择" style="width: 100%">
@@ -168,14 +112,13 @@ import request from "@/utils/request.ts";
 import config from "@/config/config.ts";
 import {ElMessage} from "element-plus";
 import $ from 'jquery'
+import topSelect from "@/components/topSelect/topSelect";
 
 const tableData = ref([])
 const drawer = ref(false)
 const direction = ref('rtl')
 const formTitle = ref('待办详情')
-const searchData = ref({});
 const formData = ref({});
-
 const statusOptions = ref([
   {
     label: "未同步",
@@ -196,10 +139,10 @@ const mount = () => {
   getTodoTypeOptions();
 };
 
-function getTodo() {
+function getTodo(search) {
   request({
     url: config.workHost + "/workTodo/queryByInfo",
-    data: searchData.value
+    data: search
   }).then(res => {
     tableData.value = res.data;
   })
@@ -230,12 +173,6 @@ function editForm(row) {
   formData.value = $.extend({}, row);
 }
 
-function clearSearchAndQuery() {
-  for (let valueKey in searchData.value) {
-    searchData.value[valueKey] = ''
-  }
-  getTodo()
-}
 
 function readyDo(row) {
   row.status = 2;
@@ -327,7 +264,6 @@ function confirmClick() {
             type: "success"
           })
           drawer.value = false;
-
           getTodo();
           clearFormData()
         } else {
@@ -338,11 +274,20 @@ function confirmClick() {
         ElMessage.error("保存失败");
       })
 }
-
+const list = ref([
+    {type:'select',label:'待办类型:',value:'',options:todoTypeOptions,values:'id',labels:'typeName',prop:'todoType'},
+    {type:'select',label:'状态:',value:'',options:statusOptions,values:'value',labels:'label',prop:'status'},
+    {type:'select',label:'所属用户:',value:'',options:userOptions,values:'id',labels:'userName',prop:'todoUserId'},
+    {type:'input',label:'待办内容:',value:'',prop:'todoContent'}
+  ])
 function clearFormData() {
   for (let valueKey in formData.value) {
     formData.value[valueKey] = '';
   }
+}
+function submit(search){
+  console.log('查询',list,search)
+  getTodo(search.value)
 }
 </script>
 
