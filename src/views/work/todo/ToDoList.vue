@@ -14,16 +14,16 @@
       <div class="table">
         <el-table :data="tableData" style="width: 100%">
           <el-table-column fixed prop="todoTypeName" label="待办类型" width="150"/>
-          <el-table-column prop="todoContent" label="待办内容" width="500"/>
-          <el-table-column prop="statusName" label="待办状态">
+          <el-table-column  prop="todoContent" label="待办内容" width="500"/>
+          <el-table-column  prop="statusName" label="待办状态">
             <template #default="{ row }">
               <span :class="row.status === 1? 'waitToDo' :'readyDo'">
                 {{ row.statusName }}
               </span>
             </template>
           </el-table-column>
-          <el-table-column prop="todoUserName" label="所属用户"/>
-          <el-table-column prop="createTime" label="创建时间">
+          <el-table-column  prop="todoUserName" label="所属用户"/>
+          <el-table-column min-width="180" prop="createTime" label="创建时间">
             <template #default="{ row }">
               {{ formatDate(row.createTime) }}
             </template>
@@ -278,7 +278,8 @@ const list = ref([
     {type:'select',label:'待办类型:',value:'',options:todoTypeOptions,values:'id',labels:'typeName',prop:'todoType'},
     {type:'select',label:'状态:',value:'',options:statusOptions,values:'value',labels:'label',prop:'status'},
     {type:'select',label:'所属用户:',value:'',options:userOptions,values:'id',labels:'userName',prop:'todoUserId'},
-    {type:'input',label:'待办内容:',value:'',prop:'todoContent'}
+    {type:'input',label:'待办内容:',value:'',prop:'todoContent'},
+    {type:'date',label:'日期:',value:'',prop:'date'}
   ])
 function clearFormData() {
   for (let valueKey in formData.value) {

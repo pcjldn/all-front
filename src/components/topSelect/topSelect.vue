@@ -11,12 +11,12 @@
               :value="items[item.values]"
           />
         </el-select>
-<!--        <el-date-picker-->
-<!--            v-model="value1"-->
-<!--            type="date"-->
-<!--            placeholder="Pick a day"-->
-<!--            :size="size"-->
-<!--        />-->
+        <el-date-picker
+            v-if="item.type === 'date'"
+            v-model="item.value"
+            type="date"
+            placeholder="请选择日期"
+        />
       </el-form-item>
     </el-form>
     <div class="buttons">
@@ -42,7 +42,15 @@
   const emit = defineEmits(['submit','reset'])
   function submit(){
     props.list.forEach(item=>{
-      search.value[item.prop] = item.value
+      if(item.type === 'date'){
+        if(item.value){
+          search.value[item.prop] = item.value.toLocaleDateString().split('/').join('-')
+        }else {
+          search.value[item.prop] = ''
+        }
+      }else {
+        search.value[item.prop] = item.value
+      }
     })
     emit('submit',search)
   }
