@@ -15,6 +15,7 @@ import $ from 'jquery'
 import "@/assets/iconfont/iconfont.css"
 // 修改系统滚动条
 import "@/assets/css/scroll.css"
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
 
 
@@ -29,7 +30,10 @@ app.config.devtools = true;
 
 app.use(router)
     .use(ElementPlus)
+    // .use(Mint)
     .mount('#app')
 
-
+for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+    app.component(key, component)
+}
 
