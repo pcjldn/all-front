@@ -40,6 +40,16 @@
         </template>
       </el-table-column>
       <el-table-column prop="typeName" label="类型" />
+      <el-table-column prop="action" label="操作" width="200">
+        <template #default="scope">
+          <el-button-group>
+            <el-button type="primary" size="small" @click="addNew()">编辑</el-button>
+            <el-button type="warning" size="small" @click="edit()">查看</el-button>
+            <el-button type="danger" size="small" @click="del()">删除</el-button>
+          </el-button-group>
+
+        </template>
+      </el-table-column>
     </el-table>
   </div>
 </div>
