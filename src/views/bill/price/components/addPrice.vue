@@ -89,18 +89,24 @@ export default {
                 message: "添加成功",
                 type: "success"
               })
+
+              this.$emit('search')
+              this.$emit('close')
             }
           })
     },
     edit(){
       request.put(
-          config.billHost + "/extra/goodsType/do",this.formData)
+          config.billHost + "/extra/goodsPrice/do",this.formData)
           .then(res => {
             if(res.code == 200){
               ElMessage({
-                message: "添加成功",
+                message: "修改成功",
                 type: "success"
               })
+
+              this.$emit('search')
+              this.$emit('close')
             }
           })
     }

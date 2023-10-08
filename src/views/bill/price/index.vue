@@ -1,5 +1,16 @@
 <template>
   <div>
+    <div class="return-btn">
+      <div class="return-icon">
+        <el-icon><ArrowLeft /></el-icon>
+      </div>
+      <div class="title">菜价</div>
+      <div class="addNew">
+        <el-button type="primary" @click="addDialog = true" style="color: #ffffff">
+          <el-icon style="font-size: 20px"><CirclePlus/></el-icon>
+        </el-button>
+      </div>
+    </div>
     <div class="search-box">
       <el-form :inline="true" :model="searchData" class="search-form">
         <el-row>
@@ -44,8 +55,8 @@
           <template #default="{row}">
             <el-button-group>
               <el-button type="primary" size="small" @click="edit(row)">编辑</el-button>
-              <el-button type="warning" size="small" @click="view()">查看</el-button>
-              <el-button type="danger" size="small" @click="del()">删除</el-button>
+              <el-button type="warning" size="small" @click="view(row)">查看</el-button>
+              <el-button type="danger" size="small" @click="del(row)">删除</el-button>
             </el-button-group>
 
           </template>
@@ -60,7 +71,7 @@
         size="80%"
         :direction="addDialogPostion"
     >
-      <add-price :drawer="addDialog" ref="dialog"></add-price>
+      <add-price :drawer="addDialog" @close="addDialog = false" @search="search" ref="dialog"></add-price>
     </el-drawer>
 
   </div>
@@ -70,6 +81,8 @@
 import request from "@/utils/request.ts";
 import config from "@/config/config.ts";
 import AddPrice from "@/views/bill/price/components/addPrice.vue";
+import { CirclePlus } from '@element-plus/icons-vue'
+import {ElMessage, ElMessageBox} from 'element-plus'
 
 export default {
   name: "index",
@@ -82,7 +95,7 @@ export default {
         goodtype: ''
       },
       goodTypeOption: [],
-      addDialog: true,
+      addDialog: false,
       addDialogPostion: 'btt',
       dialogTitle: '新增商品'
     }
@@ -118,6 +131,35 @@ export default {
       this.addDialog = true
       this.$refs.dialog.formData = row
       this.$refs.dialog.action = 'edit'
+    },
+    view(row){
+
+    },
+    del(row){
+      ElMessageBox.confirm('确认删除'+row.name+'?', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+          .then(() => {
+            request.delete(
+                config.billHost + "/extra/goodsPrice/do/" + row.id)
+                .then(res => {
+                  if (res.code == 200) {
+                    ElMessage({
+                      message: "删除成功",
+                      type: "success"
+                    })
+                  }
+                  this.search()
+                })
+          })
+          .catch(() => {
+            ElMessage({
+              message: "已取消删除",
+              type: "info"
+            })
+          })
     }
   }
 }
@@ -130,12 +172,12 @@ export default {
   line-height: 50px;
   box-sizing: border-box;
   padding: 10px;
-  background: #2c3e50;
+  background: #8FBEFA;
 }
 
 .main-box {
   width: 100%;
-  height: calc(100vh - 70px - 60px);
+  height: calc(100vh - 70px - 60px - 40px);
   overflow: scroll;
 }
 
@@ -152,5 +194,16 @@ export default {
   margin-bottom: 0;
   background: #0077aa;
   color: #ffffff;
+}
+
+.return-btn{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 0 10px;
+  height: 40px;
+  line-height: 40px;
+  font-size: 18px;
+  background: #409EFF;
 }
 </style>
