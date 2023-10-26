@@ -15,6 +15,14 @@ const workRouter = [
             title: '文件上传'
         }
     },
+    {
+        path: '/work/viewOrder',
+        name: 'viewOrder',
+        component: () => import("@/views/work/viewOrder/ViewOrder.vue"),
+        meta: {
+            title: '单据快捷跳转'
+        }
+    },
 ];
 
 export default workRouter;

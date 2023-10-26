@@ -17,5 +17,6 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: $text-font-size;
+  background: #F2F4F7;
 }
 </style>
