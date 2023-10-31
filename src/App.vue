@@ -19,4 +19,20 @@ export default {
   color: $text-font-size;
   background: #F2F4F7;
 }
+
+.el-table {
+  border: #DDDDDD 1px solid;
+  padding: 0 !important;
+  border-color: #DDDDDD !important;
+
+  th {
+    background: #EFEFEF !important;
+    border-color: #DDDDDD !important;
+  }
+
+  td {
+    border-color: #DDDDDD !important;
+  }
+}
+
 </style>

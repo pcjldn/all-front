@@ -2,12 +2,14 @@
   <div class="main-box">
     <div class="return-btn">
       <div class="return-icon">
-        <el-icon style="font-weight: bold;color: white;cursor: pointer"><ArrowLeft /></el-icon>
+        <span class="type-setting" style="cursor: pointer" @click="$router.push('/bill/billType')">类型设置</span>
       </div>
       <div class="title">记账</div>
       <div class="addNew">
         <el-button type="primary" @click="addNewBill" style="color: #ffffff">
-          <el-icon style="font-size: 20px"><CirclePlus/></el-icon>
+          <el-icon style="font-size: 20px">
+            <CirclePlus/>
+          </el-icon>
         </el-button>
       </div>
     </div>
@@ -17,6 +19,8 @@
           <el-date-picker
               v-model="checkDate" style="width: 100%"
               type="date"
+              :clearable="false"
+              :editable="false"
               placeholder="选择日期">
           </el-date-picker>
         </el-col>
@@ -28,46 +32,42 @@
       </el-row>
     </div>
 
-    <div class="bill-detail-box">
-      <div class="oneBill" v-for="item in tableData" @click="edit(item)">
-        <el-row style="height: 30px;line-height: 30px">
-          <el-col :span="2">
-            <div class="img" style="width: 30px;height: 30px;border-radius: 30px">
-              <img :src="item.picUrl" style="width: 30px;height: 30px;border-radius: 30px" alt="">
+    <div class="biggestBox">
+      <ul>
+        <!-- data-type=0 隐藏删除按钮 data-type=1 显示删除按钮 -->
+        <li class="li_vessel" v-for="(item,index) in tableData" data-type="0" :key="index">
+          <!-- "touchstart" 当手指触摸屏幕时候触发  "touchend"  当手指从屏幕上离开的时候触发  "capture" 用于事件捕获-->
+          <div @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="edit(item)">
+            <div class="contant">
+              <img class="image" :src="item.picUrl" alt/>
+              <div class="rightBox">
+                <div class="rightBoxLeft">
+                  <div>{{ item.typeName }}</div>
+                  <div>
+                                  <el-icon>
+                                    <EditPen/>
+                                  </el-icon>
+                    {{ item.remarks }}</div>
+                  <div>
+                    <el-icon>
+                                    <Calendar/>
+                                  </el-icon>
+                    {{ item.payTime }}</div>
+                </div>
+                <div class="rightBoxRight">
+                  <div>￥{{ item.price }}</div>
+                </div>
+              </div>
+
             </div>
-          </el-col>
-          <el-col :span="14">
-            <div class="typeName">
-              <span>{{ item.typeName }}</span>
-            </div>
-          </el-col>
-          <el-col :span="8" style="text-align: right">
-            <span>￥</span>
-            <span>{{ item.price }}</span>
-          </el-col>
-        </el-row>
-        <el-row style="height: 30px;line-height: 30px">
-          <el-col :span="16">
-            <div class="typeName">
-              <el-icon>
-                <EditPen/>
-              </el-icon>
-              <span>{{ item.remarks }}</span>
-            </div>
-          </el-col>
-          <el-col :span="8"  style="text-align: right">
-            <div class="pay-time">
-              <el-icon>
-                <Calendar/>
-              </el-icon>
-              <span>{{ item.payTime }}</span>
-            </div>
-          </el-col>
-        </el-row>
-      </div>
+          </div>
+          <div class="removeBtn" @click="remove(item)" :data-index="index">删除</div>
+        </li>
+      </ul>
     </div>
 
     <el-drawer
+        :before-close="closeDialog"
         v-model="billDialogVisable"
         :title="dialogTitle"
         size="80%"
@@ -80,11 +80,12 @@
 </template>
 
 <script setup>
-import {ref, onMounted, watch, onBeforeUpdate} from "vue";
+import {ref, onMounted, watch, nextTick} from "vue";
 import request from "@/utils/request.ts";
 import config from "@/config/config.ts";
 import addBill from "@/views/bill/bill/components/addBill.vue";
 import $ from 'jquery'
+import {ElMessage, ElMessageBox} from "element-plus";
 
 const checkDate = ref('')
 const total = ref(100)
@@ -122,22 +123,49 @@ function getTodayBill(date) {
       .then(res => {
         tableData.value = res.data
       })
+
+  request({
+    url: config.billHost + "/extra/bill/do/totalPay",
+    data: {
+      date: date
+    }
+  })
+      .then(res => {
+        total.value = res.data
+      })
 }
 
-function addNewBill(){
+function addNewBill() {
+  restSlide();
   dialogTitle.value = '添加账单'
   billDialogVisable.value = true;
 
-  addBillRef.value.formData.payTime = checkDate.value
-  addBillRef.value.action = 'add'
+
+  nextTick(() => {
+    addBillRef.value.formData.payTime = checkDate.value
+    addBillRef.value.action = 'add'
+  });
 }
 
-function edit(row){
+function edit(row) {
+  restSlide();
   dialogTitle.value = '修改/查看账单'
   billDialogVisable.value = true;
+  nextTick(() => {
+    addBillRef.value.formData = $.extend({}, row)
+    addBillRef.value.action = 'edit'
+  });
 
-  addBillRef.value.formData = $.extend({},row)
-  addBillRef.value.action = 'edit'
+}
+
+function closeDialog() {
+  billDialogVisable.value = false;
+  nextTick(() => {
+    addBillRef.value.formData.remarks = ''
+    addBillRef.value.formData.price = ''
+    addBillRef.value.formData.typeId = addBillRef.value.typeOptions.length > 0 ? addBillRef.value.typeOptions[0].id : ''
+  });
+
 }
 
 /**
@@ -153,11 +181,96 @@ function formatDate(date) {
   return `${year}-${month}-${day}`;
 }
 
+
+// 左滑删除
+
+let startX = ref(0)
+let endX = ref(0)
+
+//滑动开始
+function touchStart(e) {
+  // 记录初始位置
+  startX.value = e.touches[0].clientX;
+}
+
+//滑动结束
+function touchEnd(e) {
+  // 当前滑动的父级元素
+  let parentElement = e.currentTarget.parentElement;
+  // 记录结束位置
+  endX.value = e.changedTouches[0].clientX;
+  // 左滑大于30距离删除出现
+  if (parentElement.dataset.type == 0 && startX.value - endX.value > 30) {
+    restSlide();
+    parentElement.dataset.type = 1;
+  }
+  // 右滑
+  if (parentElement.dataset.type == 1 && startX.value - endX.value < -30) {
+    restSlide();
+    parentElement.dataset.type = 0;
+  }
+  startX.value = 0;
+  endX.value = 0;
+}
+
+//判断当前是否有滑块处于滑动状态
+function checkSlide() {
+  let listItems = document.querySelectorAll(".li_vessel");
+  for (let i = 0; i < listItems.length; i++) {
+    if (listItems[i].dataset.type == 1) {
+      return true;
+    }
+  }
+  return false;
+}
+
+//复位滑动状态
+function restSlide() {
+  let listItems = document.querySelectorAll(".li_vessel");
+  // 复位
+  for (let i = 0; i < listItems.length; i++) {
+    listItems[i].dataset.type = 0;
+  }
+}
+
+//删除数据信息
+function remove(row) {
+  // 复位
+  restSlide();
+  // 删除数组lists中一个数据
+  ElMessageBox.confirm('确认删除'+row.remarks+'?', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    request.delete(
+        config.billHost + "/extra/bill/do/"+row.id,
+    )
+        .then(res => {
+          ElMessage({
+            message: "删除成功",
+            type: "success"
+          })
+        })
+
+    getTodayBill(checkDate.value)
+    restSlide()
+  })
+      .catch(() => {
+        ElMessage({
+          message: "已取消删除",
+          type: "info"
+        })
+        restSlide()
+      })
+
+}
+
 // 挂载渲染函数
 onMounted(mount);
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 
 .main-box {
   display: flex;
@@ -186,7 +299,7 @@ onMounted(mount);
   overflow: scroll;
 }
 
-.oneBill{
+.oneBill {
   /*margin-top: 5px;*/
   background: #ffffff;
   border-radius: 10px;
@@ -196,7 +309,7 @@ onMounted(mount);
   border-top: #795da3 1px solid;
 }
 
-.return-btn{
+.return-btn {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -214,5 +327,130 @@ onMounted(mount);
   margin-bottom: 0;
   background: #0077aa;
   color: #ffffff;
+}
+
+/*// 左滑删除*/
+
+.biggestBox {
+  overflow-x: hidden;
+  overflow-y: auto;
+  width: 95%;
+  box-sizing: border-box;
+  margin-top: 15px;
+  /*超出部分隐藏*/
+}
+
+ul {
+  /* 消除 ul 默认样式 */
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  width: 100%;
+}
+.li_vessel {
+  /* 全部样式 0.2秒 缓动*/
+  transition: all 0.2s;
+  border-top: #795da3 1px solid;
+  border-radius: 12px 0 0 0;
+  background: #ffffff;
+  box-shadow: 0 0 3px #795da3;
+}
+
+/* =0隐藏 */
+.li_vessel[data-type="0"] {
+  transform: translate3d(0, 0, 0);
+}
+
+/* =1显示 */
+.li_vessel[data-type="1"] {
+  /* -64px 设置的越大可以左滑的距离越远，最好与下面删除按钮的宽度以及定位的距离设置一样的值*/
+  transform: translate3d(-64px, 0, 0);
+}
+
+/* 删除按钮 */
+.li_vessel .removeBtn {
+  width: 64px;
+  height: 80px;
+  background: #ff4949;
+  font-size: 16px;
+  color: #fff;
+  text-align: center;
+  position: absolute;
+  top: 0px;
+  right: -65px;
+  line-height: 80px;
+  text-align: center;
+}
+
+/* 左边的图片样式 */
+.contant {
+  overflow: hidden;
+  /*消除图片带来的浮动*/
+  padding: 10px;
+}
+
+.contant .image {
+  width: 60px;
+  height: 60px;
+  border-radius: 4px;
+  float: left;
+}
+
+/* 右边的文字信息样式 */
+.rightBox {
+  display: flex;
+  /*overflow: hidden;*/
+  /*padding-left: 8px;*/
+}
+
+.rightBoxLeft{
+  overflow: hidden;
+  padding-left: 8px;
+  width: 75%;
+}
+
+.rightBoxLeft div:first-child {
+  font-weight: bold;
+}
+
+.rightBoxLeft div:nth-child(2) {
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+.rightBoxLeft div:last-child {
+  /*color: red;*/
+  font-size: 14px;
+  /*font-weight: bold;*/
+}
+
+.rightBoxRight{
+  width: 25%;
+  height: 60px;
+  line-height: 60px;
+
+  div{
+    text-align: right
+  }
+}
+
+@keyframes hue {
+  from {
+    filter: hue-rotate(0);
+  }
+
+  to {
+    filter: hue-rotate(-360deg);
+  }
+}
+
+.type-setting {
+  display: inline-block;
+  position: relative;
+  color: transparent;
+  animation: hue 1.5s linear infinite;
+  background-image: linear-gradient(to right bottom, rgb(255,0,0), rgb(255,128,0), rgb(255,255,0), rgb(0,255,0), rgb(0,255,128), rgb(0,255,255), rgb(0,128,255), rgb(0,0,255), rgb(128,0,255), rgb(255,0,255), rgb(255,0,128));
+  -webkit-background-clip: text;
 }
 </style>

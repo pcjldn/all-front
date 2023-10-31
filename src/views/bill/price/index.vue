@@ -40,7 +40,7 @@
       </el-form>
     </div>
     <div class="main-box">
-      <el-table :data="tableData" height="100%" style="width: 100%">
+      <el-table :data="tableData" border height="100%" style="width: 100%">
         <el-table-column prop="name" label="名称" min-width="70"/>
         <el-table-column prop="minPrice" label="价格" min-width="100">
           <template #default="scope">

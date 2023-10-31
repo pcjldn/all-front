@@ -12,7 +12,15 @@ const billRouter = [
                 name: 'bill',
                 component: () => import("@/views/bill/bill/index"),
                 meta: {
-                    title: '记账'
+                    title: '记账 - 记账系统'
+                },
+            },
+            {
+                path: '/bill/billType',
+                name: 'billType',
+                component: () => import("@/views/bill/bill/typeSetting/billTypeList"),
+                meta: {
+                    title: '账单类型 - 记账系统'
                 },
             },
             {
@@ -20,7 +28,7 @@ const billRouter = [
                 name: 'price',
                 component: () => import("@/views/bill/price/index"),
                 meta: {
-                    title: '菜价'
+                    title: '菜价 - 记账系统'
                 },
             },
             {
@@ -28,7 +36,7 @@ const billRouter = [
                 name: 'saveMoney',
                 component: () => import("@/views/bill/saveMoney/index"),
                 meta: {
-                    title: '存钱计划'
+                    title: '存钱计划 - 记账系统'
                 },
             },
             {
@@ -36,7 +44,7 @@ const billRouter = [
                 name: 'statistics',
                 component: () => import("@/views/bill/statistics/index"),
                 meta: {
-                    title: '统计'
+                    title: '统计 - 记账系统'
                 },
             }
         ]

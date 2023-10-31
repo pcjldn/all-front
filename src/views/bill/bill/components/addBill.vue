@@ -13,8 +13,12 @@
               v-for="item in typeOptions"
               :key="item.id"
               :label="item.typeName"
-              :value="item.id"
-          />
+              :value="item.id">
+            <div style="display: flex;justify-content: left">
+              <div class="type-icon"><img :src="item.picUrl" style="width: 20px;height: 20px;border-radius: 20px"/></div>
+              <div class="type-name" style="padding-left: 10px;height: 20px;line-height: 20px">{{ item.typeName }}</div>
+            </div>
+          </el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="备注">
@@ -56,10 +60,15 @@ export default {
   data() {
     return {
       formData: {
+        id:'',
         payTime: '',
         typeId: '',
         price: '',
         remarks: '',
+        fp_pic_url: '',
+        create_time: '',
+        update_time: '',
+        is_dele: 0,
       },
       action: 'add',
       typeOptions: []
