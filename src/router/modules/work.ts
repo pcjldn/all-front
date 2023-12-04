@@ -23,6 +23,14 @@ const workRouter = [
             title: '单据快捷跳转'
         }
     },
+    {
+        path: '/work/login',
+        name: 'viewOrder',
+        component: () => import("@/views/work/CwNoPwdLogin.vue"),
+        meta: {
+            title: '免密登录'
+        }
+    },
 ];
 
 export default workRouter;

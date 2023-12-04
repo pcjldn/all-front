@@ -39,24 +39,58 @@
           <!-- "touchstart" 当手指触摸屏幕时候触发  "touchend"  当手指从屏幕上离开的时候触发  "capture" 用于事件捕获-->
           <div @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="edit(item)">
             <div class="contant">
-              <img class="image" :src="item.picUrl" alt/>
+<!--              <img class="image" :src="item.picUrl" alt/>-->
               <div class="rightBox">
-                <div class="rightBoxLeft">
-                  <div>{{ item.typeName }}</div>
-                  <div>
-                                  <el-icon>
-                                    <EditPen/>
-                                  </el-icon>
-                    {{ item.remarks }}</div>
-                  <div>
-                    <el-icon>
-                                    <Calendar/>
-                                  </el-icon>
-                    {{ item.payTime }}</div>
-                </div>
-                <div class="rightBoxRight">
-                  <div>￥{{ item.price }}</div>
-                </div>
+<!--                <div class="rightBoxLeft">-->
+<!--                  <div>{{ item.typeName }}</div>-->
+<!--                  <div>-->
+<!--                                  <el-icon>-->
+<!--                                    <EditPen/>-->
+<!--                                  </el-icon>-->
+<!--                    {{ item.remarks }}</div>-->
+<!--                  <div>-->
+<!--                    <el-icon>-->
+<!--                                    <Calendar/>-->
+<!--                                  </el-icon>-->
+<!--                    {{ item.payTime }}</div>-->
+<!--                </div>-->
+<!--                <div class="rightBoxRight">-->
+<!--                  <div>￥{{ item.price }}</div>-->
+<!--                </div>-->
+                <el-row >
+                  <el-col :span="2">
+                    <div class="img" style="width: 30px;height: 30px;border-radius: 30px">
+                      <img :src="item.picUrl" style="width: 30px;height: 30px;border-radius: 30px" alt="">
+                    </div>
+                  </el-col>
+                  <el-col :span="14">
+                    <div class="typeName">
+                      <span>{{ item.typeName }}</span>
+                    </div>
+                  </el-col>
+                  <el-col :span="8" style="text-align: right">
+                    <span>￥</span>
+                    <span>{{ item.price }}</span>
+                  </el-col>
+                </el-row>
+                <el-row type="flex" >
+                  <el-col :span="14">
+                    <div class="typeName">
+                      <el-icon>
+                        <EditPen/>
+                      </el-icon>
+                      <span>{{ item.remarks }}</span>
+                    </div>
+                  </el-col>
+                  <el-col :span="10" style="text-align: right">
+                    <div class="pay-time">
+                      <el-icon>
+                        <Calendar/>
+                      </el-icon>
+                      <span>{{ item.payTime }}</span>
+                    </div>
+                  </el-col>
+                </el-row>
               </div>
 
             </div>
@@ -159,13 +193,13 @@ function edit(row) {
 }
 
 function closeDialog() {
-  billDialogVisable.value = false;
-  nextTick(() => {
-    addBillRef.value.formData.remarks = ''
-    addBillRef.value.formData.price = ''
-    addBillRef.value.formData.typeId = addBillRef.value.typeOptions.length > 0 ? addBillRef.value.typeOptions[0].id : ''
-  });
+  addBillRef.value.formData.remarks = ''
+  addBillRef.value.formData.price = ''
+  addBillRef.value.formData.typeId = addBillRef.value.typeOptions.length > 0 ? addBillRef.value.typeOptions[0].id : ''
 
+  nextTick(() => {
+    billDialogVisable.value = false;
+  });
 }
 
 /**
@@ -292,23 +326,6 @@ onMounted(mount);
   align-items: center;
 }
 
-.bill-detail-box {
-  width: 95%;
-  margin-top: 10px;
-  height: calc(100vh - 70px - 40px - 50px);
-  overflow: scroll;
-}
-
-.oneBill {
-  /*margin-top: 5px;*/
-  background: #ffffff;
-  border-radius: 10px;
-  box-sizing: border-box;
-  padding-left: 10px;
-  padding-right: 10px;
-  border-top: #795da3 1px solid;
-}
-
 .return-btn {
   display: flex;
   flex-direction: row;
@@ -337,6 +354,7 @@ onMounted(mount);
   width: 95%;
   box-sizing: border-box;
   margin-top: 15px;
+  height: -webkit-fill-available;
   /*超出部分隐藏*/
 }
 
@@ -380,7 +398,6 @@ ul {
   top: 0px;
   right: -65px;
   line-height: 80px;
-  text-align: center;
 }
 
 /* 左边的图片样式 */
@@ -388,52 +405,10 @@ ul {
   overflow: hidden;
   /*消除图片带来的浮动*/
   padding: 10px;
+  //min-height: 50px;
+  height: auto;
 }
-
-.contant .image {
-  width: 60px;
-  height: 60px;
-  border-radius: 4px;
-  float: left;
-}
-
 /* 右边的文字信息样式 */
-.rightBox {
-  display: flex;
-  /*overflow: hidden;*/
-  /*padding-left: 8px;*/
-}
-
-.rightBoxLeft{
-  overflow: hidden;
-  padding-left: 8px;
-  width: 75%;
-}
-
-.rightBoxLeft div:first-child {
-  font-weight: bold;
-}
-
-.rightBoxLeft div:nth-child(2) {
-  margin-top: 4px;
-  font-size: 14px;
-}
-
-.rightBoxLeft div:last-child {
-  /*color: red;*/
-  font-size: 14px;
-  /*font-weight: bold;*/
-}
-
-.rightBoxRight{
-  width: 25%;
-  height: 60px;
-  line-height: 60px;
-
-  div{
-    text-align: right
-  }
-}
 
 @keyframes hue {
   from {

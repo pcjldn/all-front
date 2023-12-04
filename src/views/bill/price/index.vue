@@ -53,11 +53,22 @@
         <el-table-column prop="typeName" label="类型" min-width="55"/>
         <el-table-column prop="action" label="操作" min-width="165">
           <template #default="{row}">
-            <el-button-group>
-              <el-button type="primary" size="small" @click="edit(row)">编辑</el-button>
-              <el-button type="warning" size="small" @click="view(row)">查看</el-button>
-              <el-button type="danger" size="small" @click="del(row)">删除</el-button>
-            </el-button-group>
+<!--            <el-button-group>-->
+<!--              <el-button type="primary" size="small" @click="edit(row)">编辑</el-button>-->
+<!--              <el-button type="warning" size="small" @click="view(row)">查看</el-button>-->
+<!--              <el-button type="danger" size="small" @click="del(row)">删除</el-button>-->
+<!--            </el-button-group>-->
+            <el-button type="primary" @click="edit(row)" circle>
+              <el-icon>
+                <Edit/>
+              </el-icon>
+            </el-button>
+            <el-button type="success" circle>
+              <el-icon><View /></el-icon>
+            </el-button>
+            <el-button type="danger" @click="del(row)" circle>
+              <el-icon><Delete/></el-icon>
+            </el-button>
 
           </template>
         </el-table-column>
@@ -81,12 +92,14 @@
 import request from "@/utils/request.ts";
 import config from "@/config/config.ts";
 import AddPrice from "@/views/bill/price/components/addPrice.vue";
-import { CirclePlus } from '@element-plus/icons-vue'
+import {CirclePlus, Delete, View} from '@element-plus/icons-vue'
 import {ElMessage, ElMessageBox} from 'element-plus'
+import {nextTick} from "vue";
+import $ from "jquery";
 
 export default {
   name: "index",
-  components: {AddPrice},
+  components: {View, Delete, AddPrice},
   data() {
     return {
       tableData: [],
@@ -129,8 +142,11 @@ export default {
     edit(row) {
       this.dialogTitle = '编辑商品信息'
       this.addDialog = true
-      this.$refs.dialog.formData = row
-      this.$refs.dialog.action = 'edit'
+
+      nextTick(() => {
+        this.$refs.dialog.formData = $.extend({}, row)
+        this.$refs.dialog.action = 'edit'
+      });
     },
     view(row){
 
