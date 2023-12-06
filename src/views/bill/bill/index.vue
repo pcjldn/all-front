@@ -1,5 +1,7 @@
 <template>
   <div class="main-box">
+    <touch-button  v-if="addBtnIsShow" @click="addNewBill"></touch-button>
+
     <div class="return-btn">
       <div class="return-icon">
         <span class="type-setting" style="cursor: pointer" @click="$router.push('/bill/billType')">类型设置</span>
@@ -39,25 +41,8 @@
           <!-- "touchstart" 当手指触摸屏幕时候触发  "touchend"  当手指从屏幕上离开的时候触发  "capture" 用于事件捕获-->
           <div @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="edit(item)">
             <div class="contant">
-<!--              <img class="image" :src="item.picUrl" alt/>-->
               <div class="rightBox">
-<!--                <div class="rightBoxLeft">-->
-<!--                  <div>{{ item.typeName }}</div>-->
-<!--                  <div>-->
-<!--                                  <el-icon>-->
-<!--                                    <EditPen/>-->
-<!--                                  </el-icon>-->
-<!--                    {{ item.remarks }}</div>-->
-<!--                  <div>-->
-<!--                    <el-icon>-->
-<!--                                    <Calendar/>-->
-<!--                                  </el-icon>-->
-<!--                    {{ item.payTime }}</div>-->
-<!--                </div>-->
-<!--                <div class="rightBoxRight">-->
-<!--                  <div>￥{{ item.price }}</div>-->
-<!--                </div>-->
-                <el-row >
+                <el-row>
                   <el-col :span="2">
                     <div class="img" style="width: 30px;height: 30px;border-radius: 30px">
                       <img :src="item.picUrl" style="width: 30px;height: 30px;border-radius: 30px" alt="">
@@ -73,7 +58,7 @@
                     <span>{{ item.price }}</span>
                   </el-col>
                 </el-row>
-                <el-row type="flex" >
+                <el-row type="flex">
                   <el-col :span="14">
                     <div class="typeName">
                       <el-icon>
@@ -120,17 +105,21 @@ import config from "@/config/config.ts";
 import addBill from "@/views/bill/bill/components/addBill.vue";
 import $ from 'jquery'
 import {ElMessage, ElMessageBox} from "element-plus";
+import TouchButton from "@/views/components/TouchButton.vue";
 
 const checkDate = ref('')
 const total = ref(100)
 const tableData = ref([])
 const billDialogVisable = ref(false)
+const addBtnIsShow = ref(true)
 const addDialogPostion = ref('btt')
 const dialogTitle = ref('新增账单')
 const addBillRef = ref(null);
+const backDom = ref(null);
 
 const mount = () => {
   init();
+  // handlerDrag();
 };
 
 function init() {
@@ -145,6 +134,10 @@ watch(checkDate, async (newVal, oldVal) => {
     checkDate.value = formatDate(newVal)
   }
   await getTodayBill(checkDate.value)
+})
+
+watch(billDialogVisable, async (newVal, oldVal) => {
+  addBtnIsShow.value = !billDialogVisable.value
 })
 
 function getTodayBill(date) {
@@ -193,8 +186,9 @@ function edit(row) {
 }
 
 function closeDialog() {
-  addBillRef.value.formData.remarks = ''
-  addBillRef.value.formData.price = ''
+  for (let formDataKey in addBillRef.value.formData) {
+    addBillRef.value.formData[formDataKey] = ''
+  }
   addBillRef.value.formData.typeId = addBillRef.value.typeOptions.length > 0 ? addBillRef.value.typeOptions[0].id : ''
 
   nextTick(() => {
@@ -272,13 +266,13 @@ function remove(row) {
   // 复位
   restSlide();
   // 删除数组lists中一个数据
-  ElMessageBox.confirm('确认删除'+row.remarks+'?', {
+  ElMessageBox.confirm('确认删除' + row.remarks + '?', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
     request.delete(
-        config.billHost + "/extra/bill/do/"+row.id,
+        config.billHost + "/extra/bill/do/" + row.id,
     )
         .then(res => {
           ElMessage({
@@ -305,7 +299,7 @@ onMounted(mount);
 </script>
 
 <style scoped lang="scss">
-
+* { touch-action: pan-y; }
 .main-box {
   display: flex;
   flex-direction: column;
@@ -366,6 +360,7 @@ ul {
   box-sizing: border-box;
   width: 100%;
 }
+
 .li_vessel {
   /* 全部样式 0.2秒 缓动*/
   transition: all 0.2s;
@@ -408,6 +403,7 @@ ul {
   //min-height: 50px;
   height: auto;
 }
+
 /* 右边的文字信息样式 */
 
 @keyframes hue {
@@ -425,7 +421,7 @@ ul {
   position: relative;
   color: transparent;
   animation: hue 1.5s linear infinite;
-  background-image: linear-gradient(to right bottom, rgb(255,0,0), rgb(255,128,0), rgb(255,255,0), rgb(0,255,0), rgb(0,255,128), rgb(0,255,255), rgb(0,128,255), rgb(0,0,255), rgb(128,0,255), rgb(255,0,255), rgb(255,0,128));
+  background-image: linear-gradient(to right bottom, rgb(255, 0, 0), rgb(255, 128, 0), rgb(255, 255, 0), rgb(0, 255, 0), rgb(0, 255, 128), rgb(0, 255, 255), rgb(0, 128, 255), rgb(0, 0, 255), rgb(128, 0, 255), rgb(255, 0, 255), rgb(255, 0, 128));
   -webkit-background-clip: text;
 }
 </style>

@@ -8,7 +8,7 @@ const billRouter = [
         },
         children: [
             {
-                path: '/bill/index',
+                path: 'index',
                 name: 'bill',
                 component: () => import("@/views/bill/bill/index"),
                 meta: {
@@ -16,7 +16,7 @@ const billRouter = [
                 },
             },
             {
-                path: '/bill/billType',
+                path: 'billType',
                 name: 'billType',
                 component: () => import("@/views/bill/bill/typeSetting/billTypeList"),
                 meta: {
@@ -24,7 +24,7 @@ const billRouter = [
                 },
             },
             {
-                path: '/bill/price',
+                path: 'price',
                 name: 'price',
                 component: () => import("@/views/bill/price/index"),
                 meta: {
@@ -32,7 +32,7 @@ const billRouter = [
                 },
             },
             {
-                path: '/bill/saveMoney',
+                path: 'saveMoney',
                 name: 'saveMoney',
                 component: () => import("@/views/bill/saveMoney/index"),
                 meta: {
@@ -40,12 +40,46 @@ const billRouter = [
                 },
             },
             {
-                path: '/bill/statistics',
+                path: 'statistics',
                 name: 'statistics',
                 component: () => import("@/views/bill/statistics/index"),
                 meta: {
                     title: '统计 - 记账系统'
                 },
+                // children:[
+                //     {
+                //         path: '/bill/statistics/week',
+                //         name: 'week',
+                //         component: () => import("@/views/bill/statistics/components/week.vue"),
+                //         meta: {
+                //             title: '统计-周'
+                //         },
+                //     },
+                //     {
+                //         path: '/bill/statistics/day',
+                //         name: 'week',
+                //         component: () => import("@/views/bill/statistics/components/day"),
+                //         meta: {
+                //             title: '统计-日'
+                //         },
+                //     },
+                //     {
+                //         path: '/bill/statistics/month',
+                //         name: 'week',
+                //         component: () => import("@/views/bill/statistics/components/month"),
+                //         meta: {
+                //             title: '统计-月'
+                //         },
+                //     },
+                //     {
+                //         path: '/bill/statistics/year',
+                //         name: 'week',
+                //         component: () => import("@/views/bill/statistics/components/year"),
+                //         meta: {
+                //             title: '统计-年'
+                //         },
+                //     },
+                // ]
             }
         ]
     },

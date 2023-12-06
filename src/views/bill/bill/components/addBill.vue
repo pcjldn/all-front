@@ -9,7 +9,7 @@
       >
         <el-form-item label="账单类型">
           <!--        <el-input v-model="formData.typeId"/>-->
-          <el-select v-model="formData.typeId" style="width: 100%" class="m-2" placeholder="请选择">
+          <el-select :readonly="action == 'view'" :disabled="action == 'view'" v-model="formData.typeId" style="width: 100%" class="m-2" placeholder="请选择">
             <el-option
                 v-for="item in typeOptions"
                 :key="item.id"
@@ -27,25 +27,28 @@
           </el-select>
         </el-form-item>
         <el-form-item label="备注">
-          <el-input v-model="formData.remarks" :validate-event="formData.remarks != null"/>
+          <el-input :readonly="action == 'view'" v-model="formData.remarks" :validate-event="formData.remarks != null"/>
         </el-form-item>
-        <el-form-item label="价格">
-          <el-input v-model="formData.price"/>
+        <el-form-item  label="价格">
+          <el-input :readonly="action == 'view'" v-model="formData.price"/>
         </el-form-item>
 
         <el-form-item label="购买时间">
-          <el-input v-model="formData.payTime"/>
+          <el-input :readonly="action == 'view'" v-model="formData.payTime"/>
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="sureAdd">
+          <el-button type="primary" @click="sureAdd" v-if="action != 'view'">
             {{ action == 'add' ? '添加' : '确定' }}
+          </el-button>
+          <el-button type="danger" @click="$emit('close')">
+            关闭
           </el-button>
         </el-form-item>
       </el-form>
     </div>
 
-    <el-divider content-position="left">快捷选项</el-divider>
+    <el-divider content-position="left" v-if="action == 'add'">快捷选项</el-divider>
 <!--    <div class="title" style="font-weight: bold;width: 100%;"  v-if="action == 'add'">快捷选择</div>-->
     <div class="bill-type-box" v-if="action == 'add'">
       <div class="bill-type-item" :class="{'active' : item.id == formData.typeId}" v-for="item in typeOptions" @click="typeCheck(item)">
@@ -135,6 +138,9 @@ export default {
                 type: "success"
               })
 
+              for (let formDataKey in this.formData) {
+                this.formData[formDataKey] = ''
+              }
               this.$emit('search')
               this.$emit('close')
             }
@@ -142,11 +148,11 @@ export default {
     },
     typeCheck(row){
       this.formData.typeId = row.id;
-      ElMessage({
-        message: "当前选择：《"+ row.typeName + "》",
-        type: "info",
-
-      })
+      // ElMessage({
+      //   message: "当前选择：《"+ row.typeName + "》",
+      //   type: "info",
+      //
+      // })
     }
   }
 }
@@ -157,6 +163,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+  z-index: 9999;
 }
 
 ::v-deep .el-form {

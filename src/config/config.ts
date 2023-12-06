@@ -1,6 +1,8 @@
 export default {
 
   billHost:'http://101.132.187.55:8088',
+  // billHost:'http://192.168.31.68:8088',
+
   workHost:'http://101.132.187.55:8088',
 
   // srjtHost:'http://10.7.2.102:7049/fdmis',
