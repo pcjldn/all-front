@@ -189,6 +189,8 @@ function closeDialog() {
   for (let formDataKey in addBillRef.value.formData) {
     addBillRef.value.formData[formDataKey] = ''
   }
+
+  addBillRef.value.isAddFpPic = false
   addBillRef.value.formData.typeId = addBillRef.value.typeOptions.length > 0 ? addBillRef.value.typeOptions[0].id : ''
 
   nextTick(() => {
@@ -279,9 +281,11 @@ function remove(row) {
             message: "删除成功",
             type: "success"
           })
+
+          getTodayBill(checkDate.value)
         })
 
-    getTodayBill(checkDate.value)
+
     restSlide()
   })
       .catch(() => {
@@ -338,6 +342,10 @@ onMounted(mount);
   margin-bottom: 0;
   background: #0077aa;
   color: #ffffff;
+}
+
+::v-deep .el-drawer__content {
+  padding: 10px;
 }
 
 /*// 左滑删除*/

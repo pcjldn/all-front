@@ -3,7 +3,7 @@
     <div class="return-btn">
       <div class="return-icon">
         <el-icon @click="$router.go(-1)" style="font-weight: bold;color: white;cursor: pointer">
-          <ArrowLeft/>
+          <ArrowLeft />
         </el-icon>
       </div>
       <div class="title">账单类型</div>
@@ -54,13 +54,21 @@
               <el-button type="warning" circle>
                 <el-icon><Upload /></el-icon>
               </el-button>
-
             </div>
-
           </template>
         </el-table-column>
       </el-table>
     </div>
+
+    <el-drawer
+        :before-close="closeDialog"
+        v-model="addDialog"
+        :title="dialogTitle"
+        size="80%"
+        :direction="addDialogPostion"
+    >
+      <bill-type-form ref="addTypeRef" @close="closeDialog"></bill-type-form>
+    </el-drawer>
   </div>
 </template>
 
@@ -68,27 +76,22 @@
 import request from "@/utils/request.ts";
 import config from "@/config/config.ts";
 import {Delete} from "@element-plus/icons-vue";
+import BillTypeForm from "@/views/bill/bill/typeSetting/billTypeForm.vue";
 
 export default {
   name: "billTypeList",
+  components: {BillTypeForm},
   computed: {
     Delete() {
       return Delete
     },
-    Star() {
-      return Star
-    },
-    Message() {
-      return Message
-    },
-    Check() {
-      return Check
-    }
   },
   data() {
     return {
       tableData: [],
-      addDialog: ''
+      addDialog: false,
+      addDialogPostion: 'btt',
+      dialogTitle: '新增分类'
     }
   },
   mounted() {
@@ -106,6 +109,9 @@ export default {
     },
     del(row) {
 
+    },
+    closeDialog(){
+      this.addDialog = false
     }
   }
 }
