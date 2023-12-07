@@ -48,6 +48,8 @@
           <div style="display: flex;">
             <div style="width: 70%;">
               <el-upload
+                  capture="camera"
+                  accept="image/*"
                   ref="upload"
                   class="upload-demo"
                   :action="config.billHost+'/saveImage'"
@@ -76,7 +78,7 @@
               </el-upload>
             </div>
             <div style="width: 30%;text-align: right">
-              <el-button type="danger" @click="()=>{$refs.upload.clearFiles()}">清空</el-button>
+              <el-button type="danger" @click="()=>{$refs.upload.clearFiles();}">清空</el-button>
             </div>
           </div>
         </el-form-item>
