@@ -337,14 +337,14 @@ onMounted(mount);
   box-sizing: border-box;
 }
 
-::v-deep .el-drawer__header {
-  padding: 10px;
+:deep(.el-drawer__header)  {
+  padding: 10px !important;
   margin-bottom: 0;
   background: #0077aa;
   color: #ffffff;
 }
 
-::v-deep .el-drawer__content {
+:deep(.el-drawer__body) {
   padding: 10px;
 }
 

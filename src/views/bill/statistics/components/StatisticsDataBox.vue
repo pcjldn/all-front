@@ -9,8 +9,9 @@
     >
       <add-bill ref="addBillRef" @close="billDialogVisable = false" @search="getTodayBill(checkDate)"></add-bill>
     </el-drawer>
+
     <el-collapse v-if="tableData.length > 0" accordion>
-      <el-collapse-item v-for="(item,index) in tableData" :name="index">
+      <el-collapse-item v-for="(item,index) in tableData" :name="index" @click="showValue(item,index)">
         <template #title>
           <div class="type-item-title"
                style="padding-left: 10px;width: 100%;display: flex;font-size: 16px;justify-content: center">
@@ -25,7 +26,7 @@
         </template>
 
         <div class="biggestBox">
-          <ul>
+          <ul v-if="item.isShow">
             <!-- data-type=0 隐藏删除按钮 data-type=1 显示删除按钮 -->
             <li class="li_vessel" v-for="(item2,index2) in item.bills" data-type="0" :key="index2">
               <!-- "touchstart" 当手指触摸屏幕时候触发  "touchend"  当手指从屏幕上离开的时候触发  "capture" 用于事件捕获-->
@@ -75,7 +76,7 @@
         </div>
       </el-collapse-item>
     </el-collapse>
-    <el-empty v-else description="查询时间段内无消费数据" />
+    <el-empty v-else description="查询时间段内无消费数据"/>
   </div>
 </template>
 
@@ -90,13 +91,15 @@ export default {
     tableData: {
       type: Array,
       default: []
-    }
+    },
+
   },
   data() {
     return {
       dialogTitle: '查看账单',
       billDialogVisable: false,
-      addDialogPostion: 'btt'
+      addDialogPostion: 'btt',
+      defaultVal: "100000",
     }
   },
   methods: {
@@ -117,6 +120,22 @@ export default {
       this.$nextTick(() => {
         this.billDialogVisable = false;
       });
+    },
+    showValue(item, index) {
+      if (typeof (item.isShow) == 'undefined') {
+        item.isShow = true
+      } else {
+        item.isShow = !item.isShow
+      }
+
+      if (item.isShow == true) {
+        // 把其他的关了
+        this.tableData.forEach((data, i) => {
+          if (i != index) {
+            data.isShow = false
+          }
+        })
+      }
     }
   }
 }

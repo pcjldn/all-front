@@ -5,7 +5,7 @@
         <el-button size="default" type="primary" @click="getData(++date)">上一周</el-button>
       </div>
       <div style="width: 60%;text-align: center;;">
-        {{ startDate + '~' + endDate }}
+        {{ startDate + '/' + endDate }}
       </div>
       <div style="width: 20%;text-align: right">
         <el-button size="default" type="primary" @click="getData(--date)">下一周</el-button>

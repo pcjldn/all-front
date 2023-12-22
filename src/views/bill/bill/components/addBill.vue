@@ -38,54 +38,61 @@
           <el-input :readonly="action == 'view'" v-model="formData.payTime"/>
         </el-form-item>
 
-        <el-form-item label="发票" v-if="formData.fpPicUrl != null && formData.fpPicUrl != '' && action != 'add'">
-          <div>
-            <img :src="formData.fpPicUrl" alt="" style="width: 40px" @click="viewFp(formData.fpPicUrl)">
-          </div>
-        </el-form-item>
+<!--        <el-form-item label="发票" v-if="formData.fpPicUrl != null && formData.fpPicUrl != '' && action != 'add' && !isAddFpPic">-->
+<!--          <div style="display:flex;width: 100%;">-->
+<!--            <div style="width: 70%">-->
+<!--              <img :src="formData.fpPicUrl" alt="" style="width: 40px" @click="viewFp(formData.fpPicUrl)">-->
+<!--            </div>-->
+<!--            <div style="width: 30%;text-align: right" v-if="action != 'view'">-->
+<!--              <el-button type="danger" @click="()=>{formData.fpPicUrl = ''}">清空</el-button>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </el-form-item>-->
 
-        <el-form-item label="上传发票" v-if="isAddFpPic">
-          <div style="display: flex;">
-            <div style="width: 70%;">
+        <el-form-item label="上传发票" v-if="isAddFpPic || ( formData.fpPicUrl != null && formData.fpPicUrl != '')">
+          <div style="display: flex;width: 100%;">
+            <div style="width: 50%;" v-if="action != 'view'">
+<!--              :limit="1"-->
+<!--              :on-exceed="handleExceed"-->
               <el-upload
                   capture="camera"
                   accept="image/*"
                   ref="upload"
                   class="upload-demo"
-                  :action="config.billHost+'/saveImage'"
-                  :limit="1"
-                  :on-exceed="handleExceed"
+                  :action="config.commonHost+'/common/v1/fileUploadRecords/upload'"
+                  :limit="5"
                   :on-success="uploadSuccess"
                   :on-error="uploadError"
+                  :data="{'sysName':'bill','busType':'bill'}"
                   :on-progress="()=>{loading = true}"
               >
                 <template #trigger>
                   <el-button type="primary" v-loading="loading">选择发票</el-button>
                 </template>
                 <template #file="{ file }">
-                  <div>
-                    <img class="el-upload-list__item-thumbnail" :src="file.url" style="width: 40px" alt=""/>
-                    <span class="el-upload-list__item-actions">
-          <span
-              class="el-upload-list__item-preview"
-              @click="handlePictureCardPreview(file)"
-          >
-            <el-icon><zoom-in/></el-icon>
-          </span>
-        </span>
-                  </div>
+                  <div></div>
                 </template>
               </el-upload>
             </div>
-            <div style="width: 30%;text-align: right">
-              <el-button type="danger" @click="()=>{$refs.upload.clearFiles();}">清空</el-button>
+            <div style="width: 20%;text-align: right" v-if="action != 'view'">
+              <el-button type="danger" @click="()=>{$refs.upload.clearFiles();formData.fpPicUrl =''}">清空</el-button>
+            </div>
+          </div>
+          <div>
+            <div style="width: 100%;text-align: left;">
+              <div v-if="formData.fpPicUrl.indexOf('[') != -1" style="width: 100%;display: flex;flex-wrap: wrap">
+                <img v-for="item in JSON.parse(formData.fpPicUrl)" :src="item.fileUrl" alt="" style="width: 40px" @click="viewFp(item.fileUrl)">
+              </div>
+              <div v-else style="width: 100%;display: flex;flex-wrap: wrap">
+                <img :src="formData.fpPicUrl" alt="" style="width: 40px" @click="viewFp(formData.fpPicUrl)">
+              </div>
             </div>
           </div>
         </el-form-item>
-
       </el-form>
+
       <div style="text-align: center;margin-bottom: 20px">
-        <el-button type="success" @click="isAddFpPic = !isAddFpPic" v-if="action != 'view'">
+        <el-button type="success" @click="isAddFpPic = !isAddFpPic" v-if="action == 'add' || (action == 'edit' && (formData.fpPicUrl == '' || formData.fpPicUrl == null))">
           {{
             isAddFpPic ? '无需发票' : ((formData.fpPicUrl == null || formData.fpPicUrl == '') ? '增加发票' : '修改发票')
           }}
@@ -102,7 +109,7 @@
     <div>
       <el-dialog class="fpDialog" v-model="dialogVisible" width="95%" top="10px" left="10px" title="图片预览">
         <div style="width: 100%;text-align: center;max-height: 90vh;overflow-y: scroll">
-          <img  :src="dialogImageUrl" alt="预览图片" style="width: 300px"/>
+          <img :src="dialogImageUrl" alt="预览图片" style="width: 300px"/>
         </div>
       </el-dialog>
     </div>
@@ -254,8 +261,17 @@ export default {
     uploadSuccess(resp, file, files) {
       this.loading = false
       if (resp.code == 200) {
-        file.url = resp.data
-        this.formData.fpPicUrl = resp.data
+        let data = resp.data;
+        // 如果之前有图片则合并
+        if(this.formData.fpPicUrl){
+          let arr = JSON.parse(this.formData.fpPicUrl);
+          data.forEach(item=>{
+            arr.push(item)
+          })
+          this.formData.fpPicUrl = JSON.stringify(arr)
+        } else {
+          this.formData.fpPicUrl = JSON.stringify(data)
+        }
       } else {
         this.$refs.upload.clearFiles()
         this.formData.fpPicUrl = ''
@@ -345,13 +361,14 @@ export default {
   text-align: center;
   //border-bottom: #FEEBEF 3px solid;
 }
+
 :deep(.el-dialog__body) {
   //width: 100% !important;
   padding: 10px !important;
   margin-bottom: 0 !important;
 }
 
-:deep(.fpDialog .el-dialog__headerbtn){
+:deep(.fpDialog .el-dialog__headerbtn) {
   top: 0
 }
 </style>
