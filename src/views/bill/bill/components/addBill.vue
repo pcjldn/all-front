@@ -84,7 +84,7 @@
                 <img v-for="item in JSON.parse(formData.fpPicUrl)" :src="item.fileUrl" alt="" style="width: 40px" @click="viewFp(item.fileUrl)">
               </div>
               <div v-else style="width: 100%;display: flex;flex-wrap: wrap">
-                <img :src="formData.fpPicUrl" alt="" style="width: 40px" @click="viewFp(formData.fpPicUrl)">
+                <img :src="formData.fpPicUrl" alt="" style="width: 40px;margin-left: 5px" @click="viewFp(formData.fpPicUrl)">
               </div>
             </div>
           </div>
@@ -138,9 +138,6 @@ export default {
       return config
     }
   },
-// /extra/billType/do
-  ///extra/bill/do
-// {"typeId":"1612997378800422913","remarks":"测试","price":"1","payTime":"2023-10-24","fpPicUrl":"","file":""}
   props: {
     drawer: {
       type: Boolean,
