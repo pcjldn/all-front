@@ -2,7 +2,9 @@
   <div>
     <div class="return-btn">
       <div class="return-icon">
-        <el-icon style="font-weight: bold;color: white;cursor: pointer"><ArrowLeft /></el-icon>
+        <el-icon @click="$router.go(-1)" style="font-weight: bold;color: white;cursor: pointer">
+          <ArrowLeft/>
+        </el-icon>
       </div>
       <div class="title">菜价</div>
       <div class="addNew">

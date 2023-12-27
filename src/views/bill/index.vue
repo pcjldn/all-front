@@ -6,19 +6,24 @@
     </div>
     <div class="footer-area">
       <div class="tab-item" @click="activeTab=0;$router.push('/bill/saveMoney')">
-        <el-icon><CirclePlus /></el-icon>
-        存钱
+        <el-icon v-if="activeTab == 0"><Reading /></el-icon>
+        <el-icon v-else><Collection /></el-icon>
+
+        字典
       </div>
       <div class="tab-item" @click="activeTab=1;$router.push('/bill/index')">
-        <el-icon><EditPen /></el-icon>
+        <el-icon v-if="activeTab == 1"><Edit /></el-icon>
+        <el-icon v-else><EditPen /></el-icon>
         记账
       </div>
       <div class="tab-item" @click="activeTab=2;$router.push('/bill/price')">
-        <el-icon><Setting /></el-icon>
+        <el-icon v-if="activeTab == 2"><Filter /></el-icon>
+        <el-icon v-else><Setting /></el-icon>
         菜价
       </div>
       <div class="tab-item" @click="activeTab=3;$router.push('/bill/statistics')">
-        <el-icon><Histogram /></el-icon>
+        <el-icon v-if="activeTab == 3"><PieChart /></el-icon>
+        <el-icon v-else><Histogram /></el-icon>
         统计
       </div>
     </div>
@@ -72,7 +77,7 @@ export default {
 .main-area {
   height: calc(100vh - 70px);
   background: #ffffff;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .footer-area {
@@ -80,7 +85,9 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #EDEFF0;
+  box-sizing: border-box;
+  border-top: #EDEFF0 1px solid;
+  //background: #EDEFF0;
 
   .tab-item {
     display: flex;
@@ -101,7 +108,7 @@ export default {
     text-align: center;
     font-size: 21px;
     color: #9a6e3a;
-    background: #8FBEFA;
+    //background: #8FBEFA;
     font-weight: bold;
   }
 }

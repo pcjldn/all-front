@@ -4,7 +4,9 @@
 
     <div class="return-btn">
       <div class="return-icon">
-        <span class="type-setting" style="cursor: pointer" @click="$router.push('/bill/billType')">类型设置</span>
+        <el-icon @click="$router.go(-1)" style="font-weight: bold;color: white;cursor: pointer">
+          <ArrowLeft/>
+        </el-icon>
       </div>
       <div class="title">记账</div>
       <div class="addNew">
@@ -170,6 +172,7 @@ function addNewBill() {
 
   nextTick(() => {
     addBillRef.value.formData.payTime = checkDate.value
+    addBillRef.value.formData.typeId = addBillRef.value.typeOptions.length > 0 ? addBillRef.value.typeOptions[0].id : ''
     addBillRef.value.action = 'add'
   });
 }

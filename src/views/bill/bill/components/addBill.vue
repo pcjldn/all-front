@@ -63,7 +63,7 @@
                   :limit="5"
                   :on-success="uploadSuccess"
                   :on-error="uploadError"
-                  :data="{'sysName':'bill','busType':'bill'}"
+                  :data="{'sysName':'bill','busType':'bill','prefix': formData.remarks.trim()}"
                   :on-progress="()=>{loading = true}"
               >
                 <template #trigger>
@@ -185,7 +185,9 @@ export default {
           config.billHost + "/extra/billType/do")
           .then(res => {
             this.typeOptions = res.data
-            this.formData.typeId = this.typeOptions[0].id
+            if(this.action == 'add'){
+              this.formData.typeId = this.typeOptions[0].id
+            }
           })
     },
     sureAdd() {

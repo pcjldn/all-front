@@ -34,7 +34,7 @@ const billRouter = [
             {
                 path: 'saveMoney',
                 name: 'saveMoney',
-                component: () => import("@/views/bill/saveMoney/index"),
+                component: () => import("@/views/bill/sysDic/index"),
                 meta: {
                     title: '存钱计划 - 记账系统'
                 },
@@ -44,7 +44,7 @@ const billRouter = [
                 name: 'statistics',
                 component: () => import("@/views/bill/statistics/index"),
                 meta: {
-                    title: '统计 - 记账系统'
+                    title: '类型设置 - 记账系统'
                 },
                 // children:[
                 //     {
